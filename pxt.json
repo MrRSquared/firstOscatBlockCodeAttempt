@@ -5,7 +5,9 @@
         "core": "*",
         "radio": "*",
         "microphone": "*",
-        "Rover": "github:freenove/makecode-extension-rover#v1.0.7"
+        "Rover": "github:freenove/makecode-extension-rover#v1.0.7",
+        "joystickbit": "github:tinkertanker/pxt-joystickbit#v1.0.1",
+        "radio-broadcast": "*"
     },
     "files": [
         "main.blocks",

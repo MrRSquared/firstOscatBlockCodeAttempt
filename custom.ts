@@ -1,4 +1,4 @@
-/** * Custom blocks */ //% weight=100 color=#d42926 icon="\uf1b9"
+/** * Custom blocks */ //% weight=100 color=#d42926 icon="\f1b0"
 namespace Oscats {
     let mode = 0;
     let previousMode = 1;
