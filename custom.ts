@@ -1,4 +1,4 @@
-/** * Custom blocks */ //% weight=100 color=#d42926 icon="\f1b0"
+/** * Custom blocks */ //% weight=100 color=#d42926 icon="\uf1b0"
 namespace Oscats {
     let mode = 0;
     let previousMode = 1;
@@ -6,6 +6,7 @@ namespace Oscats {
     let RobotTimer_PERIOD = 20; // Fire every .20 seconds
     let ElapsedTimer = 0;
     let ElapsedTimerController = 0;
+    let Radio = "None";
     let RobotInit: (params: any) => void
     let RobotPeriodic: (params: any) => void
     let AutoInit: (params: any) => void
