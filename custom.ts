@@ -17,7 +17,7 @@ namespace Oscats {
     let DisPeriodic: (params: any) => void
 
         input.onButtonPressed(Button.A, function () {//Trigger Tele
-            if (mode ==0){
+            if (mode == 0){
                 mode = 1;
             } else {
                 mode =0;
@@ -69,9 +69,9 @@ namespace Oscats {
         }
     
         //% block="robotInit()"
-        export function robotInit(a: () => void): void {
-            RobotInit = a;
-        }
+        export function robotInit(handler: () => void) {
+        handler();
+    }
 
         //% block="robotPeriodic()"
         export function robotPeriodic(a: () => void): void {
@@ -108,7 +108,7 @@ namespace Oscats {
             DisPeriodic = a;
         }
 
-        basic.forever(function () { //Let's keep a forever loop running inside our custom namespace. You could probably at a basic.pause at the bottom of the loop to slow down how fast it runs.
+    basic.forever(function () { //Let's keep a forever loop running inside our custom namespace. You could probably at a basic.pause at the bottom of the loop to slow down how fast it runs.
     //let nextEvent2Time = 0
     if (input.runningTime() > RobotTimer) {
         if (mode!=previousMode){//Trigger Init Functions
@@ -136,6 +136,7 @@ namespace Oscats {
         switch(mode){
             case 1: //Tele
                 if (TelePeriodic!=null){
+                    basic.showString("Tele");
                     TelePeriodic(null) //Fire the code
                 } else{
                     basic.showString("Tele");  
@@ -143,6 +144,7 @@ namespace Oscats {
             break;
             case 2: //Auto
                 if (AutoPeriodic!=null){
+                    basic.showString("Auto");
                     AutoPeriodic(null) //Fire the code
                 } else{
                     basic.showString("Auto");  
@@ -150,6 +152,7 @@ namespace Oscats {
             break;  //Disabled
             default:
                 if (DisPeriodic!=null){
+                    basic.showString("Dis");
                     DisPeriodic(null) //Fire the code
                 } else{
                     basic.showString("Dis");  

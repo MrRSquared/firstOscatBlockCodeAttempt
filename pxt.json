@@ -7,7 +7,8 @@
         "microphone": "*",
         "Rover": "github:freenove/makecode-extension-rover#v1.0.7",
         "joystickbit": "github:tinkertanker/pxt-joystickbit#v1.0.1",
-        "radio-broadcast": "*"
+        "radio-broadcast": "*",
+        "MaqueenPlus": "github:dfrobot/pxt-dfrobot-maqueenplus#v1.4.2"
     },
     "files": [
         "main.blocks",
