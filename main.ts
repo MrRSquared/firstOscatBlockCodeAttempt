@@ -1,7 +1,7 @@
 enum RadioMessage {
-    message1 = 49434,
+    Up = 483,
     HI = 38118,
-    Up = 483
+    message1 = 49434
 }
 let color = 0
 Oscats.robotPeriodic(function () {
@@ -9,10 +9,7 @@ Oscats.robotPeriodic(function () {
 })
 input.onButtonPressed(Button.A, function () {
     radio.sendString("HI")
-})
-Oscats.robotInit(function () {
-    radio.setGroup(1)
-    radio.sendString("G'Day")
+    Oscats.setChannel(0)
 })
 Oscats.teleopPeriodic(function () {
     Rover.MotorRunDual(joystickbit.getRockerValue(joystickbit.rockerType.X) - joystickbit.getRockerValue(joystickbit.rockerType.Y), joystickbit.getRockerValue(joystickbit.rockerType.X) + joystickbit.getRockerValue(joystickbit.rockerType.Y))

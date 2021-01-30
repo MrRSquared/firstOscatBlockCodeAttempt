@@ -15,6 +15,9 @@ namespace Oscats {
     let TelePeriodic: (params: any) => void
     let DisInit: (params: any) => void
     let DisPeriodic: (params: any) => void
+    let RadioChannel = 1;
+    let IntroString = "G'Day";
+    
 
         input.onButtonPressed(Button.A, function () {//Trigger Tele
             if (mode == 0){
@@ -47,8 +50,16 @@ namespace Oscats {
             }
             return currentRobotMode;
         }
-                
-        
+
+     /**
+     * Use this method to set the channel of the robot to match the remote.
+     */               
+//% block="Set Channel"
+        export function setChannel(steps: number) {
+
+    }
+    radio.setGroup(RadioChannel);
+    radio.sendString(IntroString);
 
         //% block="getTimer"
         export function getTimer() {
