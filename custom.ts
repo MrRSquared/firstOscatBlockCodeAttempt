@@ -31,9 +31,22 @@ namespace Oscats {
             if (mode ==0){
                 mode = 2;
             } else {
-                mode =0;
+                mode =0; //Disabled
             }
-        })        
+        }) 
+        /**
+     * The library hard-wires the A and B buttons to the robot mode, 
+     * but use this method to control it another way. 
+     * Set the input (integer) to...
+     *  0 (disabled),
+     *  1 (Teleoperated), Order
+     *  2 (Autonomous) to control the robot functions.
+     */     
+    //% block
+    export function setRobotMode(variableInput:number ){
+        mode = variableInput;
+    }
+           
         //% block="getRobotMode()"
         export function getRobotMode() {
             let currentRobotMode = "disabled";
@@ -55,12 +68,16 @@ namespace Oscats {
      * Use this method to set the channel of the robot to match the remote.
      */               
 //% block="Set Channel"
-        export function setChannel(steps: number) {
+        export function setChannel(variableChannel:number ) {
 
     }
     radio.setGroup(RadioChannel);
     radio.sendString(IntroString);
 
+     
+        /**
+         * This method gets the current time of the timer.
+         */ 
         //% block="getTimer"
         export function getTimer() {
             ElapsedTimer = input.runningTime() - ElapsedTimerController;
