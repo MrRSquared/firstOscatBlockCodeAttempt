@@ -19,6 +19,9 @@ radio.onReceivedString(function (receivedString) {
         Oscats.setRobotMode(2)
     }
 })
+radio.onReceivedValue(function (name, value) {
+	
+})
 Oscats.autonomousPeriodic(function () {
 	
 })
