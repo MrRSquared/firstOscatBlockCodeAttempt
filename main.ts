@@ -3,24 +3,25 @@ enum RadioMessage {
     HI = 38118,
     message1 = 49434
 }
-let color = 0
 Oscats.robotPeriodic(function () {
     radio.sendValue("Battery", Rover.BatteryLevel())
 })
 input.onButtonPressed(Button.A, function () {
-    radio.sendString("HI")
-    Oscats.setChannel(0)
+	
 })
 Oscats.teleopPeriodic(function () {
-    Rover.MotorRunDual(joystickbit.getRockerValue(joystickbit.rockerType.X) - joystickbit.getRockerValue(joystickbit.rockerType.Y), joystickbit.getRockerValue(joystickbit.rockerType.X) + joystickbit.getRockerValue(joystickbit.rockerType.Y))
+	
 })
+/**
+ * This Logic should handle the radio for the remote. It i tested using this remote.
+ * 
+ * https://www.amazon.com/gp/product/B08HD557QJ/ref=ppx_yo_dt_b_asin_title_o09_s00?ie=UTF8&psc=1
+ */
 radio.onReceivedString(function (receivedString) {
-    if (color == 1) {
-        DFRobotMaqueenPlus.setRGBLight(RGBLight.RGBL, Color.OFF)
-        color = 0
+    if (receivedString == "A") {
+    	
     } else if (receivedString == "B") {
-        DFRobotMaqueenPlus.setRGBLight(RGBLight.RGBL, Color.PINK)
-        color = 1
+    	
     }
 })
 Oscats.autonomousPeriodic(function () {
