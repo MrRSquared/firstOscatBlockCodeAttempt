@@ -3,11 +3,14 @@ enum RadioMessage {
     HI = 38118,
     message1 = 49434
 }
+let Speed = 0
+let Turn = 0
 Oscats.robotPeriodic(function () {
     radio.sendValue("Battery", Rover.BatteryLevel())
 })
 Oscats.teleopPeriodic(function () {
-	
+    DFRobotMaqueenPlus.mototRun(Motors.M1, Dir.CW, Speed - Turn)
+    DFRobotMaqueenPlus.mototRun(Motors.M2, Dir.CW, Speed + Turn)
 })
 // This Logic should handle the radio for the remote. It i tested using this remote.
 // 
@@ -19,6 +22,10 @@ radio.onReceivedString(function (receivedString) {
         Oscats.setRobotMode(2)
     }
 })
-Oscats.autonomousPeriodic(function () {
-	
+radio.onReceivedValue(function (name, value) {
+    if (name == "XAxis") {
+        Turn = value
+    } else if (name == "YAxis") {
+        Speed = value
+    }
 })
