@@ -1,4 +1,5 @@
 /** * Custom blocks */ //% weight=100 color=#d42926 icon="\uf1b0"
+//% groups="['General', 'Uesful']"
 namespace Oscats {
     let mode = 0;
     let previousMode = 1;
@@ -48,6 +49,7 @@ namespace Oscats {
     }
            
         //% block="getRobotMode()"
+        //% group = "uselful"
         export function getRobotMode() {
             let currentRobotMode = "disabled";
             switch(mode){
