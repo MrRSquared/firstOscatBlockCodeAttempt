@@ -1,10 +1,6 @@
-number = 0
+strip: neopixel.Strip = None
 
-def on_button_pressed_a():
-    basic.show_number(number)
-input.on_button_pressed(Button.A, on_button_pressed_a)
-
-def on_loop_always():
-    global number
-    number += 1
-
+def on_robot_periodic():
+    global strip
+    strip = neopixel.create(DigitalPin.P0, 24, NeoPixelMode.RGB)
+Oscats.robot_periodic(on_robot_periodic)

@@ -1,27 +1,22 @@
-enum RadioMessage {
-    Up = 483,
-    HI = 38118,
-    message1 = 49434
-}
+let strip: neopixel.Strip = null
 Oscats.robotPeriodic(function () {
-    radio.sendValue("Battery", Rover.BatteryLevel())
+    basic.showString("" + (Oscats.getTimer()))
+})
+Oscats.robotInit(function () {
+    strip = neopixel.create(DigitalPin.P15, 2, NeoPixelMode.RGB)
 })
 Oscats.teleopPeriodic(function () {
-	
+    strip.showColor(neopixel.colors(NeoPixelColors.Green))
+    strip.show()
 })
-// This Logic should handle the radio for the remote. It i tested using this remote.
-// 
-// https://www.amazon.com/gp/product/B08HD557QJ/ref=ppx_yo_dt_b_asin_title_o09_s00?ie=UTF8&psc=1
-radio.onReceivedString(function (receivedString) {
-    if (receivedString == "A") {
-        Oscats.setRobotMode(1)
-    } else if (receivedString == "B") {
-        Oscats.setRobotMode(2)
-    }
-})
-radio.onReceivedValue(function (name, value) {
-	
+Oscats.disabledPeriodic(function () {
+    DFRobotMaqueenPlus.mototStop(Motors.ALL)
+    strip.clear()
+    strip.show()
+    DFRobotMaqueenPlus.setRGBLight(RGBLight.RGBL, Color.RED)
 })
 Oscats.autonomousPeriodic(function () {
-	
+    strip.showColor(neopixel.colors(NeoPixelColors.Blue))
+    strip.show()
+    DFRobotMaqueenPlus.mototRun(Motors.ALL, Dir.CW, 66)
 })

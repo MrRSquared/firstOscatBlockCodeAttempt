@@ -159,6 +159,10 @@ namespace Oscats {
                 }
                 basic.showString("D");
         }
+
+        if (RobotPeriodic!=null){
+                    RobotPeriodic(null) //Fire the code
+                }
             
         }
         switch(mode){
@@ -186,6 +190,7 @@ namespace Oscats {
                     basic.showString("Dis");  
                 } 
         }
+        
         previousMode = mode;
         RobotTimer = input.runningTime() + RobotTimer_PERIOD //Set the next timer event
     }
