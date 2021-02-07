@@ -1,6 +1,6 @@
-Oscats.teleopPeriodic(function () {
+Oscats.driveMode(RobotMode.TelePeriodic, function () {
     basic.showIcon(IconNames.Heart)
 })
-Oscats.autonomousPeriodic(function () {
+Oscats.driveMode(RobotMode.AutoPeriodic, function () {
     basic.showIcon(IconNames.Happy)
 })

@@ -16,8 +16,101 @@ let mode = 0;
     let DisPeriodic: (params: any) => void
     let RadioChannel = 1;
     let IntroString = "G'Day";
+    
+    //Enums
+    enum RobotControl {
+     /**
+     * Runs when the robot boots up
+     * Put all of your startup code here
+     */
+    //% block="robotInit()"
+    RobotInit,
+    /**
+     * Runs periodically regardless of mode
+     * Put periodic tasks here that run regardless of mode
+     */ 
+    //% block="robotPeriodic()"
+    RobotPeriodic
+
+}
+
+enum RobotMode {
+     /**
+     * Runs initially in teleop (Driver Control) mode
+     */
+    //% block="teleopInit()"
+    TeleInit,
+    /**
+     * Runs periodically during telep (driver control) mode
+     */ 
+    //% block="teleopPeriodic()"
+    TelePeriodic,
+    /**
+     * Runs initially in autonomous mode
+     */
+    //% block="autoInit()"
+    AutoInit,
+    /**
+     * Runs periodically in autonomous mode
+     */
+    //% block="autoPeriodic()"
+    AutoPeriodic,
+    /**
+     * Runs periodically when the robot is disabled
+     */
+    //% block="disabledInit()"
+    DisInit,
+    /**
+     * Runs periodically when the robot is disabled
+     */
+    //% block="disabledPeriodic()"
+    DisPeriodic
+}
+
 /** * Custom blocks */ //% weight=100 color=#d42926 icon="\uf1b0"
 namespace Oscats {
+        /**
+     * Look at our docs for a full guide, but these blocks are an attempt at 
+     * Using the Micro:Bit and MakeCode library to create an 
+     * FRC-Like robot. This has been tested on the Frrenove and DF RObots, but should
+     * work on any Micro:Bit compatible robot.
+     */
+
+    //Define our export blocks
+    //% block="robot mode:$arg"
+        export function on(arg: RobotControl, a: () => void): void {
+            //Set the mode of the dropped block
+            if (arg==0){
+                RobotInit = a;
+            }else if (arg ==1){
+                RobotPeriodic = a;
+            }
+        }
+
+    //% block="drive Mode:$arg"
+        export function driveMode(arg: RobotMode, a: () => void): void {
+            //Set the mode of the dropped block
+            switch(arg){
+                case 0:
+                    TeleInit = a;
+                break;
+                case 1: //Auto
+                    TelePeriodic = a;
+                break;
+                case 2: //Auto
+                     //AutoInit = a;
+                break; 
+                case 3: //Auto
+                    AutoPeriodic = a;
+                break;  
+                case 4: //Auto
+                   // DisInit = a;
+                break; 
+                case 3: //Auto
+                    DisPeriodic = a;
+                break;
+            } 
+        }  
         //% block="getRobotMode()"
         export function getRobotMode() {
             let currentRobotMode = "disabled";
@@ -63,7 +156,7 @@ namespace Oscats {
         export function setNumber(variableName: string,value: number) {
         }
     
-        //% block="robotInit()"
+       /** //% block="robotInit()"
         export function robotInit(handler: () => void) {
         handler();
     }
@@ -102,6 +195,7 @@ namespace Oscats {
         export function disabledPeriodic(a: () => void): void {
             DisPeriodic = a;
         }  
+        */
 }
 
 //Setup the Override Buttons
@@ -163,7 +257,7 @@ basic.forever(function () { //Let's keep a forever loop running inside our custo
         switch(mode){
             case 1: //Tele
                 if (TelePeriodic!=null){
-                    basic.showString("Tele");
+                    basic.showString("T");
                     TelePeriodic(null) //Fire the code
                 } else{
                     basic.showString("Tele");  
@@ -171,7 +265,7 @@ basic.forever(function () { //Let's keep a forever loop running inside our custo
             break;
             case 2: //Auto
                 if (AutoPeriodic!=null){
-                    basic.showString("Auto");
+                    basic.showString("A");
                     AutoPeriodic(null) //Fire the code
                 } else{
                     basic.showString("Auto");  
@@ -179,7 +273,7 @@ basic.forever(function () { //Let's keep a forever loop running inside our custo
             break;  //Disabled
             default:
                 if (DisPeriodic!=null){
-                    basic.showString("Dis");
+                    basic.showString("D");
                     DisPeriodic(null) //Fire the code
                 } else{
                     basic.showString("Dis");  

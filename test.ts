@@ -1,7 +1,7 @@
 // tests go here; this will not be compiled when this package is used as an extension.
-Oscats.teleopPeriodic(function () {
+Oscats.driveMode(RobotMode.TeleInit, function () {
     basic.showIcon(IconNames.Heart)
 })
-Oscats.autonomousPeriodic(function () {
+Oscats.driveMode(RobotMode.TeleInit, function () {
     basic.showIcon(IconNames.Happy)
 })
