@@ -1,7 +1,5 @@
-/** * Custom blocks */ //% weight=100 color=#d42926 icon="\uf1b0"
-//% groups="['Logic Functions', 'Motor Functions']"
-namespace Oscats {
-    let mode = 0;
+
+let mode = 0;
     let previousMode = 1;
     let RobotTimer = 0; //Main robot timer
     let RobotTimer_PERIOD = 20; // Fire every .20 seconds
@@ -18,37 +16,8 @@ namespace Oscats {
     let DisPeriodic: (params: any) => void
     let RadioChannel = 1;
     let IntroString = "G'Day";
-    
-
-        input.onButtonPressed(Button.A, function () {//Trigger Tele
-            if (mode == 0){
-                mode = 1;
-            } else {
-                mode =0;
-            }
-        })
-
-        input.onButtonPressed(Button.B, function () {//Trigger Auto
-            if (mode ==0){
-                mode = 2;
-            } else {
-                mode =0; //Disabled
-            }
-        }) 
-        /**
-     * The library hard-wires the A and B buttons to the robot mode, 
-     * but use this method to control it another way. 
-     * Set the input (integer) to...
-     *  0 (disabled),
-     *  1 (Teleoperated), Order
-     *  2 (Autonomous) to control the robot functions.
-     */     
-    //% block
-    //
-    export function setRobotMode(variableInput:number ){
-        mode = variableInput;
-    }
-           
+/** * Custom blocks */ //% weight=100 color=#d42926 icon="\uf1b0"
+namespace Oscats {
         //% block="getRobotMode()"
         export function getRobotMode() {
             let currentRobotMode = "disabled";
@@ -70,17 +39,12 @@ namespace Oscats {
      * Use this method to set the channel of the robot to match the remote.
      */               
 //% block="Set Channel"
-//% group="Motor Functions"
-        export function setChannel(variableChannel:number ) {
+        export function setChannel(steps: number) {
 
     }
     radio.setGroup(RadioChannel);
     radio.sendString(IntroString);
 
-     
-        /**
-         * This method gets the current time of the timer.
-         */ 
         //% block="getTimer"
         export function getTimer() {
             ElapsedTimer = input.runningTime() - ElapsedTimerController;
@@ -137,9 +101,41 @@ namespace Oscats {
         //% block="disabledPeriodic()"
         export function disabledPeriodic(a: () => void): void {
             DisPeriodic = a;
-        }
+        }  
+}
 
-    basic.forever(function () { //Let's keep a forever loop running inside our custom namespace. You could probably at a basic.pause at the bottom of the loop to slow down how fast it runs.
+//Setup the Override Buttons
+    /**
+     * The library hard-wires the A and B buttons to the robot mode, 
+     * but use this method to control it another way. 
+     * Set the input (integer) to...
+     *  0 (disabled),
+     *  1 (Teleoperated), Order
+     *  2 (Autonomous) to control the robot functions.
+     */  
+input.onButtonPressed(Button.A, function () {//Trigger Tele
+            if (mode == 0){
+                mode = 1;
+            } else {
+                mode =0;
+            }
+        })
+
+        input.onButtonPressed(Button.B, function () {//Trigger Auto
+            if (mode ==0){
+                mode = 2;
+            } else {
+                mode =0;
+            }
+        })
+
+    /**
+     * This is our main loop that runs the robot code.
+     * It uses two simple switch statements and a timer to control the robot.
+     * Anything put in the robot mode loops above, will run during the chosen mode. 
+     */
+
+basic.forever(function () { //Let's keep a forever loop running inside our custom namespace. You could probably at a basic.pause at the bottom of the loop to slow down how fast it runs.
     //let nextEvent2Time = 0
     if (input.runningTime() > RobotTimer) {
         if (mode!=previousMode){//Trigger Init Functions
@@ -162,10 +158,6 @@ namespace Oscats {
                 }
                 basic.showString("D");
         }
-
-        if (RobotPeriodic!=null){
-                    RobotPeriodic(null) //Fire the code
-                }
             
         }
         switch(mode){
@@ -193,10 +185,9 @@ namespace Oscats {
                     basic.showString("Dis");  
                 } 
         }
-        
         previousMode = mode;
         RobotTimer = input.runningTime() + RobotTimer_PERIOD //Set the next timer event
     }
-    })    
-}
+    })  
+      
 
