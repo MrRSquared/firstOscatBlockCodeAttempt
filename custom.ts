@@ -1,4 +1,5 @@
 /** * Custom blocks */ //% weight=100 color=#d42926 icon="\uf1b0"
+//% groups="['Logic Functions', 'Motor Functions']"
 namespace Oscats {
     let mode = 0;
     let previousMode = 1;
@@ -43,6 +44,7 @@ namespace Oscats {
      *  2 (Autonomous) to control the robot functions.
      */     
     //% block
+    //
     export function setRobotMode(variableInput:number ){
         mode = variableInput;
     }
@@ -68,6 +70,7 @@ namespace Oscats {
      * Use this method to set the channel of the robot to match the remote.
      */               
 //% block="Set Channel"
+//% group="Motor Functions"
         export function setChannel(variableChannel:number ) {
 
     }

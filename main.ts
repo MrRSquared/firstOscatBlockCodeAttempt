@@ -20,3 +20,9 @@ Oscats.autonomousPeriodic(function () {
     strip.show()
     DFRobotMaqueenPlus.mototRun(Motors.ALL, Dir.CW, 66)
 })
+basic.forever(function () {
+    Rover.MotorRunDual(50, 50)
+})
+basic.forever(function () {
+    Rover.MotorRunDual(50, 50)
+})
