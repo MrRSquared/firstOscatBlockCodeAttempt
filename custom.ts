@@ -5,8 +5,9 @@ let mode = 0;
     let RobotTimer_PERIOD = 20; // Fire every .20 seconds
     let ElapsedTimer = 0;
     let ElapsedTimerController = 0;
-    let Radio = "None";
+    let Radio = false;
     let RobotInit: (params: any) => void
+    //let RobotPeriodic2: (params: any) => void
     let RobotPeriodic: (params: any) => void
     let AutoInit: (params: any) => void
     let AutoPeriodic: (params: any) => void
@@ -16,6 +17,7 @@ let mode = 0;
     let DisPeriodic: (params: any) => void
     let RadioChannel = 1;
     let IntroString = "G'Day";
+    let init = true;
     
     //Enums
     enum RobotControl {
@@ -32,6 +34,14 @@ let mode = 0;
     //% block="robotPeriodic()"
     RobotPeriodic
 
+}
+enum Choice2 {
+    //% block="left"
+    RobotInit,
+    //% block="right"
+    RobotPeriodic,
+    //% block="elsewhere"
+    RobotInit2,
 }
 
 enum RobotMode {
@@ -80,10 +90,13 @@ namespace Oscats {
     //% block="robot mode:$arg"
         export function on(arg: RobotControl, a: () => void): void {
             //Set the mode of the dropped block
-            if (arg==0){
-                RobotInit = a;
-            }else if (arg ==1){
-                RobotPeriodic = a;
+            switch(arg){
+                case 0:
+                    RobotInit = a;
+                break;
+                case 1: 
+                    RobotPeriodic = a;
+                break;
             }
         }
 
@@ -110,7 +123,13 @@ namespace Oscats {
                     DisPeriodic = a;
                 break;
             } 
-        }  
+        }
+        //% block = "Set Radio"  
+        export function setRadio(){
+            Radio = true;
+            radio.setGroup(RadioChannel);
+            radio.sendString(IntroString);
+        }
         //% block="getRobotMode()"
         export function getRobotMode() {
             let currentRobotMode = "disabled";
@@ -135,9 +154,6 @@ namespace Oscats {
         export function setChannel(steps: number) {
 
     }
-    radio.setGroup(RadioChannel);
-    radio.sendString(IntroString);
-
         //% block="getTimer"
         export function getTimer() {
             ElapsedTimer = input.runningTime() - ElapsedTimerController;
@@ -155,47 +171,10 @@ namespace Oscats {
         //% block
         export function setNumber(variableName: string,value: number) {
         }
-    
-       /** //% block="robotInit()"
-        export function robotInit(handler: () => void) {
-        handler();
-    }
-
-        //% block="robotPeriodic()"
-        export function robotPeriodic(a: () => void): void {
-            RobotPeriodic = a;   
-        }
-
-            //% block="autonomousInit()"
-        export function autonomousInit(a: () => void): void {
-            AutoInit=a;
-        }
-
-        //% block="autonomousPeriodic()"
-        export function autonomousPeriodic(a: () => void): void {
-            AutoPeriodic =  a;
-        }
-
-        //% block="teleopInit()"
-        export function teleopInit(a: () => void): void {
-            TeleInit = a;
-        }
-
-        //% block="teleopPeriodic()"
-        export function teleopPeriodic(a: () => void): void {
-            TelePeriodic = a;
-        }
-
-        //% block="disabledInit()"
-        export function disabledInit(a: () => void): void {
-        DisInit = a;
-        }
-        
-        //% block="disabledPeriodic()"
-        export function disabledPeriodic(a: () => void): void {
-            DisPeriodic = a;
-        }  
-        */
+    if (RobotInit!=null){
+    RobotInit(null) //Fire the code
+}  
+ 
 }
 
 //Setup the Override Buttons
@@ -206,22 +185,26 @@ namespace Oscats {
      *  0 (disabled),
      *  1 (Teleoperated), Order
      *  2 (Autonomous) to control the robot functions.
-     */  
-input.onButtonPressed(Button.A, function () {//Trigger Tele
-            if (mode == 0){
-                mode = 1;
-            } else {
-                mode =0;
-            }
-        })
+     */
 
-        input.onButtonPressed(Button.B, function () {//Trigger Auto
-            if (mode ==0){
-                mode = 2;
-            } else {
-                mode =0;
-            }
-        })
+input.onButtonPressed(Button.A, function () {//Trigger Tele
+    if (mode == 0){
+        mode = 1;
+    } else {
+        mode =0;
+    }
+})
+if (RobotPeriodic!=null){
+    RobotPeriodic(null) //Fire the code
+}
+
+input.onButtonPressed(Button.B, function () {//Trigger Auto
+    if (mode ==0){
+        mode = 2;
+    } else {
+        mode =0;
+    }
+})
 
     /**
      * This is our main loop that runs the robot code.
@@ -230,6 +213,10 @@ input.onButtonPressed(Button.A, function () {//Trigger Tele
      */
 
 basic.forever(function () { //Let's keep a forever loop running inside our custom namespace. You could probably at a basic.pause at the bottom of the loop to slow down how fast it runs.
+//if this is our first run, run init.
+if ((init == true) && (RobotInit!=null)){
+    RobotInit(null) //Fire the code
+}
     //let nextEvent2Time = 0
     if (input.runningTime() > RobotTimer) {
         if (mode!=previousMode){//Trigger Init Functions
@@ -251,34 +238,36 @@ basic.forever(function () { //Let's keep a forever loop running inside our custo
                     DisInit(null) //Fire the code
                 }
                 basic.showString("D");
+        }   
         }
-            
+        //Run Robot Init...
+ 
+        if (RobotPeriodic!=null){
+        RobotPeriodic(null) //Fire the code
         }
         switch(mode){
             case 1: //Tele
                 if (TelePeriodic!=null){
-                    basic.showString("T");
                     TelePeriodic(null) //Fire the code
                 } else{
-                    basic.showString("Tele");  
+                    basic.showString("T");  
                 }
             break;
             case 2: //Auto
                 if (AutoPeriodic!=null){
-                    basic.showString("A");
                     AutoPeriodic(null) //Fire the code
                 } else{
-                    basic.showString("Auto");  
+                    basic.showString("A");  
                 }
             break;  //Disabled
             default:
                 if (DisPeriodic!=null){
-                    basic.showString("D");
                     DisPeriodic(null) //Fire the code
                 } else{
-                    basic.showString("Dis");  
+                    basic.showString("D");  
                 } 
         }
+        init = false;
         previousMode = mode;
         RobotTimer = input.runningTime() + RobotTimer_PERIOD //Set the next timer event
     }
