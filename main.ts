@@ -1,12 +1,7 @@
 Oscats.on(RobotControl.RobotInit, function () {
-    basic.showIcon(IconNames.Yes)
+    Oscats.setDriverType(DriverType.DfDriver)
 })
-Oscats.driveMode(RobotMode.TelePeriodic, function () {
-    basic.showIcon(IconNames.Heart)
-})
-Oscats.driveMode(RobotMode.AutoPeriodic, function () {
-    basic.showIcon(IconNames.Happy)
-})
-Oscats.on(RobotControl.RobotPeriodic, function () {
-    basic.showIcon(IconNames.SmallHeart)
+Oscats.driveMode(RobotMode.TeleInit, function () {
+    Oscats.setMotor(MyMotors.Motor1, Oscats.getAxis(Methods.X))
+    Oscats.setMotor(MyMotors.Motor1, Oscats.getAxis(Methods.Y))
 })

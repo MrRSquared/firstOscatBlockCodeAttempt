@@ -1,23 +1,27 @@
 
 let mode = 0;
-    let previousMode = 1;
-    let RobotTimer = 0; //Main robot timer
-    let RobotTimer_PERIOD = 20; // Fire every .20 seconds
-    let ElapsedTimer = 0;
-    let ElapsedTimerController = 0;
-    let Radio = false;
-    let RobotInit: (params: any) => void
-    //let RobotPeriodic2: (params: any) => void
-    let RobotPeriodic: (params: any) => void
-    let AutoInit: (params: any) => void
-    let AutoPeriodic: (params: any) => void
-    let TeleInit: (params: any) => void
-    let TelePeriodic: (params: any) => void
-    let DisInit: (params: any) => void
-    let DisPeriodic: (params: any) => void
-    let RadioChannel = 1;
-    let IntroString = "G'Day";
-    let init = true;
+let previousMode = 1;
+let RobotTimer = 0; //Main robot timer
+let RobotTimer_PERIOD = 20; // Fire every .20 seconds
+let ElapsedTimer = 0;
+let ElapsedTimerController = 0;
+let Radio = false;
+let RobotInit: (params: any) => void
+//let RobotPeriodic2: (params: any) => void
+let RobotPeriodic: (params: any) => void
+let AutoInit: (params: any) => void
+let AutoPeriodic: (params: any) => void
+let TeleInit: (params: any) => void
+let TelePeriodic: (params: any) => void
+let DisInit: (params: any) => void
+let DisPeriodic: (params: any) => void
+let RadioChannel = 1;
+let IntroString = "G'Day";
+let init = true;
+let xAxis = 0;
+let yAxis = 0;
+let driverType = 0;
+
     
     //Enums
     enum RobotControl {
@@ -35,13 +39,26 @@ let mode = 0;
     RobotPeriodic
 
 }
-enum Choice2 {
-    //% block="left"
-    RobotInit,
-    //% block="right"
-    RobotPeriodic,
-    //% block="elsewhere"
-    RobotInit2,
+
+/**
+     * The user selects the 4-way dc motor.
+     */
+   enum MyMotors {
+        Motor1,
+        Motor2,
+        Motor3,
+        Motor4
+
+    }
+
+enum Methods{
+    X,
+    Y
+}
+enum DriverType{
+    DfDriver, //This is the driver we use for our Vex Robots
+    MaqueenPlus,
+    Rover
 }
 
 enum RobotMode {
@@ -78,6 +95,7 @@ enum RobotMode {
 }
 
 /** * Custom blocks */ //% weight=100 color=#d42926 icon="\uf1b0"
+//% groups="['Robot Modes', 'Joystick', 'Motors', Other]"
 namespace Oscats {
         /**
      * Look at our docs for a full guide, but these blocks are an attempt at 
@@ -88,6 +106,8 @@ namespace Oscats {
 
     //Define our export blocks
     //% block="robot mode:$arg"
+    //% weight=100
+    //% group="Robot Modes"
         export function on(arg: RobotControl, a: () => void): void {
             //Set the mode of the dropped block
             switch(arg){
@@ -99,8 +119,73 @@ namespace Oscats {
                 break;
             }
         }
+        //% block ="get %arg axis"
+    //% weight = 97
+    //% group="Joystick"
+    export function getAxis(arg:Methods){
+        let axisOutput = 0;
+        if (arg == 0){
+            axisOutput = xAxis;
+        } else if (arg == 1){
+            axisOutput = yAxis;
+        }
+        return axisOutput;
+
+    }
+    //% block
+    //% group="Motors"
+    export function setDriverType(driver:DriverType){
+        driverType = driver;
+    }
+    //% block
+    //% group="Motors"
+    export function setMotor(myMotor:MyMotors, input:number){
+        let convertedInput = Oscats.convertMotor(Math.abs(input),255);
+        if (driverType == 0){
+            let motorChoice = motor.Motors.M1;
+            switch(myMotor){
+                case 0:
+                    motorChoice = motor.Motors.M1;
+                    break;
+                case 1:
+                    motorChoice = motor.Motors.M2;
+                    break;
+                case 2:
+                    motorChoice = motor.Motors.M3;
+                    break;
+                case 3:
+                    motorChoice = motor.Motors.M4;
+                    break;   
+            }
+            if (input > 0){
+            motor.MotorRun(motorChoice, motor.Dir.CW, Math.abs(convertedInput))
+            } else if (input < 0){
+                motor.MotorRun(motorChoice, motor.Dir.CCW, Math.abs(convertedInput))
+            } else
+            motor.MotorRun(motorChoice, motor.Dir.CW, 0)
+        }
+        if (driverType == 1){
+            let motorChoice = Motors.M1;
+            switch(myMotor){
+                case 0:
+                    motorChoice = Motors.M1;
+                    break;
+                case 1:
+                    motorChoice = Motors.M2;
+                    break;  
+            }
+            if (input > 0){
+                DFRobotMaqueenPlus.mototRun(motorChoice, Dir.CW, convertedInput)
+            } else if (input < 0){
+                DFRobotMaqueenPlus.mototRun(motorChoice, Dir.CCW, convertedInput)
+            } else
+            DFRobotMaqueenPlus.mototRun(motorChoice, Dir.CCW, 0)
+        }
+    }
 
     //% block="drive Mode:$arg"
+    //% weight=98
+    //% group="Robot Modes"
         export function driveMode(arg: RobotMode, a: () => void): void {
             //Set the mode of the dropped block
             switch(arg){
@@ -124,13 +209,16 @@ namespace Oscats {
                 break;
             } 
         }
-        //% block = "Set Radio"  
+        //% block = "Set Radio"
+        //% weight = 80
+        //% group="Other"
         export function setRadio(){
             Radio = true;
             radio.setGroup(RadioChannel);
             radio.sendString(IntroString);
         }
         //% block="getRobotMode()"
+        //% group="Other"
         export function getRobotMode() {
             let currentRobotMode = "disabled";
             switch(mode){
@@ -150,27 +238,41 @@ namespace Oscats {
      /**
      * Use this method to set the channel of the robot to match the remote.
      */               
-//% block="Set Channel"
-        export function setChannel(steps: number) {
-
+    //% block="Set Channel"
+    //% group="Other"
+        export function setChannel(channel: number) {
+            radio.setGroup(channel)
     }
+
+    //% block = "Convert %input %scale"
+    //% weight = 96
+    //% group="Other"
+    export function convert(input:number, scale:number){
+        let convertedNumber = 0
+        convertedNumber = ((input-(-1))/1)*scale;
+        return convertedNumber;
+    }
+
+    export function convertMotor(input:number, scale:number){
+        let convertedNumber = 0
+        convertedNumber = (input/1)*scale;
+        return convertedNumber;
+    }
+
+
         //% block="getTimer"
+        //% group="Other"
         export function getTimer() {
             ElapsedTimer = input.runningTime() - ElapsedTimerController;
             return ElapsedTimer;                 
         }
 
         //% block="resetTimer"
+        //% group="Other"
         export function resetTimer() {
             ElapsedTimerController = input.runningTime();                 
         }
         
-        /**
-         * This is a statement block with a parameter
-         */
-        //% block
-        export function setNumber(variableName: string,value: number) {
-        }
     if (RobotInit!=null){
     RobotInit(null) //Fire the code
 }  
@@ -193,6 +295,9 @@ input.onButtonPressed(Button.A, function () {//Trigger Tele
     } else {
         mode =0;
     }
+    if (Radio == true){
+        radio.sendValue("mode", mode)  
+    }
 })
 if (RobotPeriodic!=null){
     RobotPeriodic(null) //Fire the code
@@ -204,6 +309,15 @@ input.onButtonPressed(Button.B, function () {//Trigger Auto
     } else {
         mode =0;
     }
+    if (Radio == true){
+        radio.sendValue("mode", mode)  
+    }
+})
+//joystick logic
+radio.onReceivedValue(function (name, value: number) {
+    if (name == "mode"){mode = value;}
+    if (name == "xAxis"){xAxis = value;}
+    if (name == "yAxis"){yAxis = value;}  
 })
 
     /**
@@ -217,18 +331,21 @@ basic.forever(function () { //Let's keep a forever loop running inside our custo
 if ((init == true) && (RobotInit!=null)){
     RobotInit(null) //Fire the code
 }
+
     //let nextEvent2Time = 0
     if (input.runningTime() > RobotTimer) {
         if (mode!=previousMode){//Trigger Init Functions
         switch(mode){
             case 1: //Tele
                 if (TeleInit!=null){
+                    basic.showString("T");
                     TeleInit(null) //Fire the code
                 }
                 basic.showString("T");
             break;
             case 2: //Auto
                 if (AutoInit!=null){
+                    basic.showString("A");
                     AutoInit(null) //Fire the code
                 }
                 basic.showString("A");
@@ -236,8 +353,10 @@ if ((init == true) && (RobotInit!=null)){
             default:
                 if (DisInit!=null){
                     DisInit(null) //Fire the code
+                    motor.motorStopAll()
                 }
                 basic.showString("D");
+                motor.motorStopAll()
         }   
         }
         //Run Robot Init...
@@ -249,12 +368,14 @@ if ((init == true) && (RobotInit!=null)){
             case 1: //Tele
                 if (TelePeriodic!=null){
                     TelePeriodic(null) //Fire the code
+                    basic.showString("T");
                 } else{
                     basic.showString("T");  
                 }
             break;
             case 2: //Auto
                 if (AutoPeriodic!=null){
+                    basic.showString("A");
                     AutoPeriodic(null) //Fire the code
                 } else{
                     basic.showString("A");  
